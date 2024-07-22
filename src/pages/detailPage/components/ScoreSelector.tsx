@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import useScoreStore from '../../../store/rating';
 
 interface props {
   data: number;
@@ -7,8 +8,7 @@ interface props {
 }
 
 const ReviewScore = ({ ...props }: props) => {
-  const [score, setScore] = useState<number>(0);
-
+  const { setScore, score } = useScoreStore();
   const handleClick = (value: number) => {
     if (!props.readonly) {
       setScore(value);
