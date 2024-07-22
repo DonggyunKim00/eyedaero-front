@@ -11,7 +11,7 @@ const PortalWrapper = ({ children }: { children: React.ReactNode }) => {
 export default PortalWrapper;
 
 const Wrapper = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   min-width: 100%;
@@ -20,5 +20,5 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 10;
+  z-index: 99999;
 `;
