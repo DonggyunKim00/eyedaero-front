@@ -2,10 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Main from './pages/mainPage/Main';
+import Header from './components/common/Header';
 
 function Router() {
   return (
     <Layout>
+      <Header />
+
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Main />} />
