@@ -45,6 +45,7 @@ const MoviePoster = styled.div`
   justify-content: center;
   background-color: #fff;
   width: 127px;
+  cursor: pointer; /* 커서 포인터로 변경 */
 `;
 
 const MovieImage = styled.div<{ src?: string }>`
@@ -87,13 +88,23 @@ const MovieSlider: React.FC = () => {
     centerMode: false,
   };
 
+  const handleImageClick = async (title: string) => {
+    try {
+      const response = await fetch(`YOUR_API_ENDPOINT?query=${title}`);
+      const data = await response.json();
+      console.log(data); // 요청 결과를 콘솔에 출력하거나 필요한 로직을 추가하세요.
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   return (
     <Container>
       <Title>실시간 인기영화</Title>
       <Wrapper>
         <Slider {...settings}>
           {movieItems.map((item) => (
-            <MoviePoster key={item.title}>
+            <MoviePoster key={item.title} onClick={() => handleImageClick(item.title)}>
               <MovieImage src={item.imgSrc || ''}>
                 {!item.imgSrc && <span>이미지 없음</span>}
               </MovieImage>

@@ -66,9 +66,9 @@ const CustomSlider: React.FC<CustomSliderProps> = ({ items, location, onRequestL
   const settings = {
     dots: false,
     arrows: false,
-    infinite: true,
+    infinite: false,
     speed: 500,
-    slidesToShow: 2.8, // 2개는 완전히 보이고 3번째는 2/3만 보이게
+    slidesToShow: 3, // 2개는 완전히 보이고 3번째는 2/3만 보이게
     slidesToScroll: 1,
     centerMode: false,
   };
@@ -107,6 +107,7 @@ const Container = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 393px;
+  width: 413px;
   box-sizing: border-box;
+  padding-left:20px;
 `;
