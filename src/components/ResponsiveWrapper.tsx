@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  box-sizing:border-box;
   /* border: 1px solid black; */
   @media screen and (min-width: 1280px) {
     width: 1280px;
@@ -22,7 +23,7 @@ const Wrapper = styled.div`
     padding: 0 45px;
   }
   @media screen and (max-width: 1023px) {
-    width: 425px;
+    width: 393px;
     padding: 0 20px;
   }
 `;
