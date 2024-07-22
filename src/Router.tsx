@@ -6,6 +6,7 @@ import Header from './components/common/Header';
 import TheaterSearch from './pages/TheaterSearch/TheaterSearch';
 import SplashScreen from './pages/mainPage/SplashScreen';
 import DetailPage from './pages/detailPage';
+import AuthPage from './pages/authPage';
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
           <Route path="/main" element={<Main />} />
           <Route path="/list" element={<TheaterSearch />} />
           <Route path="/detail" element={<DetailPage />} />
+          <Route path="/auth" element={<AuthPage />} />
         </Routes>
       </BrowserRouter>
     </Layout>
