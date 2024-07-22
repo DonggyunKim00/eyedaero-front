@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { css, styled } from 'styled-components';
 import PortalWrapper from '../../../components/common/PortalWrapper';
 import useReviewModalState from '../../../store/modal/review';
+import Review from './Review';
 import ScoreSelector from './ScoreSelector';
 
 const ReviewModal = () => {
@@ -26,34 +27,60 @@ const ReviewModal = () => {
           <TheaterInfo>CGV 인제 2관</TheaterInfo>
         </SelectRating>
 
-        <ModalBottom>
-          {isActive ? (
-            <GrowForm>
-              <ScoreSelector data={0} readonly={false} />
-              <FormBottom>
-                <textarea placeholder="글을 작성해주세요." />
-                <Buttons>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsActive(false);
-                    }}
-                  >
-                    취소
-                  </button>
-                  <button type="submit">확인</button>
-                </Buttons>
-              </FormBottom>
-            </GrowForm>
-          ) : (
+        <ModalBottom isActive={isActive}>
+          <GrowForm isActive={isActive}>
+            <ScoreSelector data={0} readonly={false} />
+            <FormBottom>
+              <textarea placeholder="글을 작성해주세요." />
+              <Buttons>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsActive(false);
+                  }}
+                >
+                  취소
+                </button>
+                <button type="submit">확인</button>
+              </Buttons>
+            </FormBottom>
+          </GrowForm>
+          {!isActive && (
             <ReviewAddButton onClick={() => setIsActive(true)}>
               <img src="/svg/Plus.svg" />
               <span>작성하기</span>
             </ReviewAddButton>
           )}
 
-          <ReviewList>
-            <Review />
+          <ReviewList isActive={isActive}>
+            <Review
+              name={'익명'}
+              rate={'4.5'}
+              time={'2주 전'}
+              content={'여기 진짜 좋음'}
+              likenum={10}
+            />
+            <Review
+              name={'익명'}
+              rate={'4.5'}
+              time={'2주 전'}
+              content={'여기 진짜 좋음'}
+              likenum={10}
+            />
+            <Review
+              name={'익명'}
+              rate={'4.5'}
+              time={'2주 전'}
+              content={'여기 진짜 좋음'}
+              likenum={10}
+            />
+            <Review
+              name={'익명'}
+              rate={'4.5'}
+              time={'2주 전'}
+              content={'여기 진짜 좋음'}
+              likenum={10}
+            />
           </ReviewList>
         </ModalBottom>
       </Container>
@@ -73,6 +100,10 @@ const Container = styled.div`
   border-radius: 15px;
   padding: 23px;
   box-sizing: border-box;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -90,6 +121,8 @@ const Head = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
+  position: relative;
+  z-index: 100;
 `;
 
 const SelectRating = styled.div`
@@ -141,13 +174,16 @@ const ReviewAddButton = styled.button`
     line-height: 26px;
   }
 `;
-const ModalBottom = styled.div`
+const ModalBottom = styled.div<{ isActive: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: all 1s ease-in-out;
+  transform: ${({ isActive }) =>
+    isActive ? 'translateY(0)' : 'translateY(-200px)'};
 `;
 
-const GrowForm = styled.form`
+const GrowForm = styled.form<{ isActive: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -155,6 +191,8 @@ const GrowForm = styled.form`
   background-color: #26cc9d1a;
   padding: 25px 18px 15px;
   box-sizing: border-box;
+  transition: all 1s ease-in-out;
+  opacity: ${({ isActive }) => (isActive ? 1 : 0)};
   textarea {
     width: 100%;
     min-height: 80px;
@@ -184,10 +222,10 @@ const Buttons = styled.div`
   margin-top: 10px;
 `;
 
-const ReviewList = styled.div`
+const ReviewList = styled.div<{ isActive: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: all 1s ease-in-out;
+  margin-bottom: ${({ isActive }) => (isActive ? '0px' : '-200px')};
 `;
-
-const Review = styled.div``;
