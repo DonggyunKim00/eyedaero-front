@@ -1,13 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { styled } from 'styled-components';
 import ResponsiveWrapper from '../../components/ResponsiveWrapper';
 import LoginForm from './components/LoginForm';
 
-const AuthPage = () => {
+const LoginPage = () => {
   return (
     <ResponsiveWrapper>
       <Container>
-        <Header>
+        <Header to={'/'}>
           <img src="/svg/Back.svg" />
           <span>로그인</span>
         </Header>
@@ -19,14 +20,14 @@ const AuthPage = () => {
   );
 };
 
-export default AuthPage;
+export default LoginPage;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
 `;
-const Header = styled.div`
+const Header = styled(Link)`
   padding: 0px 11px;
   box-sizing: border-box;
   display: flex;
@@ -37,6 +38,7 @@ const Header = styled.div`
   background-color: #26cc9d;
   color: white;
   font-weight: 700;
+  text-decoration: none;
 `;
 
 const Content = styled.div`
