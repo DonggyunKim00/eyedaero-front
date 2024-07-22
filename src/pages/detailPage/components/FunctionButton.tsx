@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { styled } from 'styled-components';
 
-const FunctionButton = ({ ...props }) => {
-  const [isClick, setIsClick] = useState<boolean>(false);
-
+interface Props {
+  src: string;
+  onClick: () => void;
+}
+const FunctionButton = ({ ...props }: Props) => {
   return (
-    <Container isClick={isClick} onClick={() => setIsClick((prev) => !prev)}>
+    <Container onClick={() => props.onClick()}>
       <img src={props.src} />
     </Container>
   );
@@ -13,11 +15,11 @@ const FunctionButton = ({ ...props }) => {
 
 export default FunctionButton;
 
-const Container = styled.div<{ isClick: boolean }>`
+const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${({ isClick }) => (isClick ? '172px' : '63px')};
+  width: 63px;
   height: 63px;
   background-color: #26cc9d;
   border-radius: 50px;

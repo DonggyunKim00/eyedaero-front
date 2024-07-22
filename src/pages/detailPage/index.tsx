@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { styled } from 'styled-components';
 import ResponsiveWrapper from '../../components/ResponsiveWrapper';
 import { generateRandomTheater } from '../../dummy/theater';
 import FunctionButton from './components/FunctionButton';
+import ReviewModal from './components/ReviewModal';
 import Seat from './components/Seat';
+import useReviewModalState from '../../store/modal/review';
 
 const DetailPage = () => {
-  const theater = generateRandomTheater();
+  const theater = useMemo(() => {
+    return generateRandomTheater();
+  }, []);
   const max = Math.max(...theater.map((item) => item.length));
   const screeWidth = Math.max(407, 35 * max);
+
+  const { reviewModalState, open } = useReviewModalState();
+
   return (
     <ResponsiveWrapper>
+      {reviewModalState && <ReviewModal />}
+
       <Navigator>
         <button>
           <img src="/svg/PrevArrow.svg" />
@@ -28,7 +37,7 @@ const DetailPage = () => {
           return (
             <RowWrapper key={ascii}>
               <Alpha>{String.fromCharCode(ascii + 65)}</Alpha>
-              <Row flexType={screeWidth === 407 ? 'center' : 'flex-start'}>
+              <Row ftype={screeWidth === 407 ? 'center' : 'flex-start'}>
                 {item.map((type, idx) => (
                   <Seat key={idx} type={type} seatNum={idx + 1} />
                 ))}
@@ -39,8 +48,8 @@ const DetailPage = () => {
       </SeatLayout>
 
       <ButtonList>
-        <FunctionButton src="/svg/ReviewIcon.svg" text="관람 후기 보기" />
-        <FunctionButton src="/svg/Ticket.svg" text="사이트로 이동" />
+        <FunctionButton src="/svg/ReviewIcon.svg" onClick={open} />
+        <FunctionButton src="/svg/Ticket.svg" onClick={() => {}} />
       </ButtonList>
     </ResponsiveWrapper>
   );
@@ -110,10 +119,10 @@ const RowWrapper = styled.div`
   align-items: center;
   width: 100%;
 `;
-const Row = styled.div<{ flexType: string }>`
+const Row = styled.div<{ ftype: string }>`
   display: flex;
   width: 100%;
-  justify-content: ${({ flexType }) => flexType};
+  justify-content: ${({ ftype }) => ftype};
 `;
 const ButtonList = styled.div`
   position: fixed;
