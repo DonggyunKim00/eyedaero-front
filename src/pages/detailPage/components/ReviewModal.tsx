@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
-import { css, styled } from 'styled-components';
+import { styled } from 'styled-components';
 import PortalWrapper from '../../../components/common/PortalWrapper';
 import useReviewModalState from '../../../store/modal/review';
 import Review from './Review';
 import ScoreSelector from './ScoreSelector';
+import { useForm } from 'react-hook-form';
+import { useGetReview, usePostReview } from '../../../hooks/query/useReview';
+import useScoreStore from '../../../store/rating';
+import { useGetTheaterInfo } from '../../../hooks/query/useTheater';
 
-const ReviewModal = () => {
+const ReviewModal = ({ theaterRoomId }: { theaterRoomId: number }) => {
   const { close } = useReviewModalState();
   const [isActive, setIsActive] = useState<boolean>(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const { postReviewMutate } = usePostReview(theaterRoomId);
+  const { score } = useScoreStore();
+  const { data } = useGetReview(theaterRoomId);
+  const { data: theaterInfo } = useGetTheaterInfo(theaterRoomId);
 
   return (
     <PortalWrapper>
@@ -19,19 +32,42 @@ const ReviewModal = () => {
         </Head>
 
         <SelectRating>
-          <ScoreSelector data={4.0} readonly={true} />
+          {theaterInfo && (
+            <ScoreSelector
+              data={Math.round(theaterInfo.data.rate)}
+              readonly={true}
+            />
+          )}
           <Info>
-            <ReadRate>4.0</ReadRate>
-            <TotalReview>(43개)</TotalReview>
+            {theaterInfo && (
+              <>
+                <ReadRate>{Math.round(theaterInfo.data.rate) + '.0'}</ReadRate>
+                <TotalReview>({theaterInfo.data.reviewCount}개)</TotalReview>
+              </>
+            )}
           </Info>
-          <TheaterInfo>CGV 인제 2관</TheaterInfo>
+          {theaterInfo && (
+            <TheaterInfo>
+              {theaterInfo.data.theaterName} {theaterInfo.data.theaterRoomName}
+              관
+            </TheaterInfo>
+          )}
         </SelectRating>
 
         <ModalBottom isActive={isActive}>
-          <GrowForm isActive={isActive}>
+          <GrowForm
+            isActive={isActive}
+            onSubmit={handleSubmit((data) => {
+              const contents = data.contents;
+              postReviewMutate({ theaterRoomId, contents, rate: score });
+            })}
+          >
             <ScoreSelector data={0} readonly={false} />
             <FormBottom>
-              <textarea placeholder="글을 작성해주세요." />
+              <textarea
+                placeholder="글을 작성해주세요."
+                {...register('contents')}
+              />
               <Buttons>
                 <button
                   onClick={(e) => {
@@ -53,34 +89,21 @@ const ReviewModal = () => {
           )}
 
           <ReviewList isActive={isActive}>
-            <Review
-              name={'익명'}
-              rate={'4.5'}
-              time={'2주 전'}
-              content={'여기 진짜 좋음'}
-              likenum={10}
-            />
-            <Review
-              name={'익명'}
-              rate={'4.5'}
-              time={'2주 전'}
-              content={'여기 진짜 좋음'}
-              likenum={10}
-            />
-            <Review
-              name={'익명'}
-              rate={'4.5'}
-              time={'2주 전'}
-              content={'여기 진짜 좋음'}
-              likenum={10}
-            />
-            <Review
-              name={'익명'}
-              rate={'4.5'}
-              time={'2주 전'}
-              content={'여기 진짜 좋음'}
-              likenum={10}
-            />
+            {data &&
+              data.data.map((item: any) => {
+                return (
+                  <Review
+                    key={item.reviewId}
+                    reviewId={item.reviewId}
+                    name={item.userEmail}
+                    rate={item.rate}
+                    time={item.createAt}
+                    content={item.contents}
+                    likenum={item.recommendCount}
+                    theaterRoomId={theaterRoomId}
+                  />
+                );
+              })}
           </ReviewList>
         </ModalBottom>
       </Container>

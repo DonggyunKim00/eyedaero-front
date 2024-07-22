@@ -1,8 +1,12 @@
 import React from 'react';
 import { styled } from 'styled-components';
+import { useLikeReview } from '../../../hooks/query/useReview';
+import timediff from '../../../libs/timediff';
 
 const Review = ({ ...props }) => {
   const { name, rate, time, content, likenum } = props;
+  const { likeMutate } = useLikeReview(props.theaterRoomId);
+
   return (
     <Container>
       <ProfileDiv>
@@ -14,11 +18,11 @@ const Review = ({ ...props }) => {
             <Name>{name}</Name>
             <Rating>★ {rate}</Rating>
           </Left>
-          <Time>{time}</Time>
+          <Time>{timediff(time)}</Time>
         </Top>
         <Bottom>
           <Content>{content}</Content>
-          <LikeDiv>
+          <LikeDiv onClick={() => likeMutate(props.reviewId)}>
             <img src="/svg/Like.svg" />
             <span>{likenum}</span>
           </LikeDiv>
@@ -63,7 +67,7 @@ const ProfileDiv = styled.div`
   height: 32px;
 `;
 const Name = styled.span`
-  font-size: 14px;
+  font-size: 10px;
   color: #666666bf;
   font-weight: 600;
 `;
@@ -84,6 +88,7 @@ const LikeDiv = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  cursor: pointer;
   span {
     font-size: 10px;
     color: #66666666;

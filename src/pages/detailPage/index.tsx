@@ -6,7 +6,7 @@ import FunctionButton from './components/FunctionButton';
 import ReviewModal from './components/ReviewModal';
 import Seat from './components/Seat';
 import useReviewModalState from '../../store/modal/review';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const DetailPage = () => {
   const theater = useMemo(() => {
@@ -15,10 +15,11 @@ const DetailPage = () => {
   const max = Math.max(...theater.map((item) => item.length));
   const screeWidth = Math.max(407, 35 * max);
   const { reviewModalState, open } = useReviewModalState();
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const theaterRoomId = Number(searchParams.get('id'));
   return (
     <ResponsiveWrapper>
-      {reviewModalState && <ReviewModal />}
+      {reviewModalState && <ReviewModal theaterRoomId={theaterRoomId} />}
 
       <Navigator>
         <button>
