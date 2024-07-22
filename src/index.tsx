@@ -1,10 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import Router from './Router';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root') as HTMLElement,
 );
-root.render(<Router />);
+root.render(
+  <Layout>
+    <div id="portal" />
+    <Router />
+  </Layout>,
+);
