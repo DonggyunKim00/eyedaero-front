@@ -6,6 +6,7 @@ import FunctionButton from './components/FunctionButton';
 import ReviewModal from './components/ReviewModal';
 import Seat from './components/Seat';
 import useReviewModalState from '../../store/modal/review';
+import { Link } from 'react-router-dom';
 
 const DetailPage = () => {
   const theater = useMemo(() => {
@@ -13,7 +14,6 @@ const DetailPage = () => {
   }, []);
   const max = Math.max(...theater.map((item) => item.length));
   const screeWidth = Math.max(407, 35 * max);
-
   const { reviewModalState, open } = useReviewModalState();
 
   return (
@@ -49,7 +49,9 @@ const DetailPage = () => {
 
       <ButtonList>
         <FunctionButton src="/svg/ReviewIcon.svg" onClick={open} />
-        <FunctionButton src="/svg/Ticket.svg" onClick={() => {}} />
+        <Link to={'https://www.cgv.co.kr/'}>
+          <FunctionButton src="/svg/Ticket.svg" onClick={() => {}} />
+        </Link>
       </ButtonList>
     </ResponsiveWrapper>
   );
