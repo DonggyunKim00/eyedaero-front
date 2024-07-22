@@ -6,6 +6,8 @@ import Header from './components/common/Header';
 import TheaterSearch from './pages/TheaterSearch/TheaterSearch';
 import SplashScreen from './pages/mainPage/SplashScreen';
 import DetailPage from './pages/detailPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 
 function Router() {
   return (
@@ -17,6 +19,8 @@ function Router() {
           <Route path="/main" element={<Main />} />
           <Route path="/list" element={<TheaterSearch />} />
           <Route path="/detail" element={<DetailPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
         </Routes>
       </BrowserRouter>
     </Layout>
