@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Select, { SingleValue } from 'react-select';
+import { useLocation, useNavigate } from 'react-router-dom'; // React Router 훅을 가져옵니다.
 
 import CustomSlider from '../../components/main/Slider'; // CustomSlider 컴포넌트를 가져옴
 import Header from '../../components/common/Header';
@@ -20,16 +21,36 @@ const locations: LocationOption[] = [
   { label: '강원', value: '강원' },
   { label: '제주', value: '제주' },
 ];
-
-const theaters: { [key: string]: string[] } = {
-  서울: ['CGV 강남', 'CGV 강북'],
-  경기: ['CGV 군자', 'CGV 더 부티크 목동운영점'],
-  인천: ['CGV 홍대입구', 'CGV 미국'],
-  '대전/충남/세종': ['CGV 목동', 'CGV 브로드웨이(신사)'],
-  '부산/대구/경상': ['CGV 상봉', 'CGV 상영발전관경기장'],
-  '광주/전라': ['CGV 상수'],
-  강원: ['CGV 강릉', 'CGV 기린', 'CGV 원통', 'CGV 인제', 'CGV 춘천'],
-  제주: ['CGV 제주'],
+const theaters: { [key: string]: { id: string; name: string }[] } = {
+  서울: [
+    { id: '1', name: 'CGV 강남' },
+    { id: '2', name: 'CGV 강북' },
+  ],
+  경기: [
+    { id: '3', name: 'CGV 군자' },
+    { id: '4', name: 'CGV 더 부티크 목동운영점' },
+  ],
+  인천: [
+    { id: '5', name: 'CGV 홍대입구' },
+    { id: '6', name: 'CGV 미국' },
+  ],
+  '대전/충남/세종': [
+    { id: '7', name: 'CGV 목동' },
+    { id: '8', name: 'CGV 브로드웨이(신사)' },
+  ],
+  '부산/대구/경상': [
+    { id: '9', name: 'CGV 상봉' },
+    { id: '10', name: 'CGV 상영발전관경기장' },
+  ],
+  '광주/전라': [{ id: '11', name: 'CGV 상수' }],
+  강원: [
+    { id: '12', name: 'CGV 강릉' },
+    { id: '13', name: 'CGV 기린' },
+    { id: '14', name: 'CGV 원통' },
+    { id: '15', name: 'CGV 인제' },
+    { id: '16', name: 'CGV 춘천' },
+  ],
+  제주: [{ id: '17', name: 'CGV 제주' }],
 };
 
 const sliderItems = [
@@ -72,14 +93,32 @@ const customSelectStyles = {
 };
 
 const TheaterSearch: React.FC = () => {
-  const [selectedLocation, setSelectedLocation] = useState<SingleValue<LocationOption>>(null);
-  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [selectedLocation, setSelectedLocation] =
+    useState<SingleValue<LocationOption>>(null);
+  const [searchResults, setSearchResults] = useState<{ id: string; name: string }[]>([]);
   const [showResults, setShowResults] = useState(false); // 결과 표시 여부
 
-  const handleLocationChange = (selectedOption: SingleValue<LocationOption>) => {
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const initialQuery = params.get('query');
+    if (initialQuery) {
+      // API 호출 등을 통해 초기 검색 결과를 설정합니다.
+      setSearchResults(theaters[initialQuery] || []);
+      setShowResults(true);
+    }
+  }, [location.search]);
+
+  const handleLocationChange = (
+    selectedOption: SingleValue<LocationOption>,
+  ) => {
     setSelectedLocation(selectedOption);
     if (selectedOption) {
-      setSearchResults(theaters[selectedOption.value]);
+      setSearchResults(theaters[selectedOption.value] || []);
+      const params = new URLSearchParams(location.search);
+      params.set('query', selectedOption.value);
+      navigate({ search: params.toString() });
     } else {
       setSearchResults([]);
     }
@@ -98,6 +137,10 @@ const TheaterSearch: React.FC = () => {
 
     return () => clearTimeout(hideTimer);
   }, []);
+
+  const handleTheaterClick = (id: string) => {
+    navigate(`/detail?id=${id}`);
+  };
 
   return (
     <Container>
@@ -121,10 +164,13 @@ const TheaterSearch: React.FC = () => {
           </SelectContainer>
           <TheaterGrid>
             {searchResults.length > 0 ? (
-              searchResults.map((theater, index) => (
-                <TheaterItem key={index}>
-                  <TheaterLogo src="/path/to/logo.png" alt="로고" /> {/* 실제 로고 경로로 변경 */}
-                  <TheaterName>{theater}</TheaterName>
+              searchResults.map((theater) => (
+                <TheaterItem
+                  key={theater.id}
+                  onClick={() => handleTheaterClick(theater.id)}
+                >
+                  <TheaterLogo src="/path/to/logo.png" alt="로고" />
+                  <TheaterName>{theater.name}</TheaterName>
                 </TheaterItem>
               ))
             ) : (
@@ -138,6 +184,7 @@ const TheaterSearch: React.FC = () => {
 };
 
 export default TheaterSearch;
+
 
 const slideUp = keyframes`
   from {
@@ -169,7 +216,7 @@ const ResultsContainer = styled.div`
   width: 100%;
   max-width: 400px;
   background-color: #66666610;
-  height: 100%;
+  height: 300px;
   padding: 20px;
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;

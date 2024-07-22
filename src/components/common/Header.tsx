@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { FaWheelchair } from 'react-icons/fa'; // Font Awesome 아이콘 사용
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 interface HeaderProps {
   slideUp: boolean;
@@ -9,6 +10,45 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ hidden }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hasMenuBeenToggled, setHasMenuBeenToggled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태 추가
+  const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태 추가
+  const navigate = useNavigate();
+
+  const handleMenuItemClick = () => {
+    navigate('/auth');
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    setHasMenuBeenToggled(true);
+  };
+
+  const handleSearch = async () => {
+    if (searchQuery.length > 0) {
+      try {
+        const response = await axios.get('https://moral-genevieve-gamza-e8c80456.koyeb.app/movie', {
+          params: {
+            name: searchQuery,
+          },
+        });
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error('검색 요청 실패:', error);
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+  
+
   return (
     <Container hidden={hidden}>
       <HeaderContainer>
@@ -18,14 +58,37 @@ const Header: React.FC<HeaderProps> = ({ hidden }) => {
         </Box>
         <Box2>
           <SearchBarContainer>
-            <SearchBar placeholder="어떤 작품을 보러 갈 예정이신가요?" />
-            <IconContainer>
+            <SearchBar 
+              placeholder="어떤 작품을 보러 갈 예정이신가요?" 
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+            <IconContainer  onClick={handleSearch}>
               <FaWheelchair />
             </IconContainer>
           </SearchBarContainer>
-          <Icon src='/image/h.png' />
+          <HamburgerIcon src="/image/h.png" onClick={toggleMenu} />
         </Box2>
       </HeaderContainer>
+      <SideMenu isOpen={isMenuOpen} hasToggled={hasMenuBeenToggled}>
+        <Box3>
+          <Logo
+            style={{ width: '48px', height: '48px', margin: 0 }}
+            src="/image/logoo.png"
+          />
+          <CloseButton src="/image/x.png" onClick={toggleMenu} />
+        </Box3>
+        <MenuItem onClick={handleMenuItemClick}>로그인</MenuItem>
+        <MenuItem onClick={handleMenuItemClick}>로그아웃</MenuItem>
+      </SideMenu>
+      {searchResults.length > 0 && (
+        <SearchResultsContainer>
+          {searchResults.map((result: any) => (
+            <SearchResultItem key={result.id}>{result.name}</SearchResultItem>
+          ))}
+        </SearchResultsContainer>
+      )}
     </Container>
   );
 };
@@ -77,10 +140,22 @@ const Box2 = styled.div`
   overflow: hidden; /* 내부 요소가 넘치지 않도록 설정 */
 `;
 
-const Icon = styled.img`
-  width: 18px;
-  height: 18px;
-  margin-left:18px;
+const Box3 = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  padding: 0 10px;
+  overflow: hidden; /* 내부 요소가 넘치지 않도록 설정 */
+  justify-content: space-between;
+  margin: 20px 0;
+`;
+
+const HamburgerIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  margin-left: 18px;
+  cursor: pointer;
 `;
 
 const Title = styled.div`
@@ -125,4 +200,85 @@ const IconContainer = styled.div`
   align-items: center;
   justify-content: center;
   color: #26cc9d;
+  cursor: pointer;
+`;
+
+const slideIn = keyframes`
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
+
+const slideOut = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+`;
+
+const SideMenu = styled.div<{ isOpen: boolean; hasToggled: boolean }>`
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 250px;
+  background-color: rgba(38, 204, 157, 0.55); /* 반투명 배경 */
+  backdrop-filter: blur(10px); /* 가우시안 블러 */
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  transform: translateX(${(props) => (props.isOpen ? '0' : '100%')});
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  ${({ isOpen, hasToggled }) =>
+    hasToggled &&
+    css`
+      ${isOpen
+        ? css`
+            animation: ${slideIn} 0.3s forwards;
+          `
+        : css`
+            animation: ${slideOut} 0.3s forwards;
+          `}
+    `}
+`;
+
+const CloseButton = styled.img`
+  align-self: flex-end;
+  font-size: 29px;
+  width: 29px;
+  padding: 10px;
+  margin-right: 10px;
+`;
+
+const MenuItem = styled.div`
+  padding: 15px 20px;
+  color: #ffffff;
+  cursor: pointer;
+  &:hover {
+    background-color: #f2f2f2;
+  }
+`;
+
+const SearchResultsContainer = styled.div`
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 10px;
+`;
+
+const SearchResultItem = styled.div`
+  padding: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f2f2f2;
+  }
 `;
