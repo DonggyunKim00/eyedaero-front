@@ -1,43 +1,31 @@
-import React from 'react';
-import { Swipeable } from 'react-swipeable';
-import Header from "../../components/common/Header";
-import ResponsiveWrapper from "../../components/ResponsiveWrapper";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 
-// 이미지 URL 배열
-const images = [
-  "image_url_1",
-  "image_url_2",
-  "image_url_3",
-  "image_url_4"
-];
+import Header from '../../components/common/Header';
 
-function Main() {
-  const [currentIndex, setCurrentIndex] = React.useState(0);
+import MovieSlider from '../../components/main/MovieSlider';
+import ConcertSlider from '../../components/main/ConcertSlider';
 
-  const handleSwipedLeft = () => {
-    setCurrentIndex((prevIndex: number) => (prevIndex + 1) % images.length);
-  };
+const Main: React.FC = () => {
+  const [hidden, setHidden] = useState(false);
 
-  const handleSwipedRight = () => {
-    setCurrentIndex((prevIndex: number) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
+
 
   return (
-    <ResponsiveWrapper>
-      <Header />
-      <Swipeable onSwipedLeft={handleSwipedLeft} onSwipedRight={handleSwipedRight}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-          <img
-            src={images[currentIndex]}
-            alt={`slide-${currentIndex}`}
-            style={{ width: '300px', height: 'auto' }}
-          />
-        </div>
-      </Swipeable>
-    </ResponsiveWrapper>
+    <Container>
+      <Header hidden={hidden} slideUp={false} />
+      <MovieSlider />
+      <ConcertSlider />
+    </Container>
   );
-}
+};
 
 export default Main;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  box-sizing: border-box;
+`;
