@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Main from './pages/mainPage/Main';
+import DetailPage from './pages/detailPage';
 
 function Router() {
   return (
@@ -9,7 +10,7 @@ function Router() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route path="/detail" element={<Main />} />
+          <Route path="/detail" element={<DetailPage />} />
         </Routes>
       </BrowserRouter>
     </Layout>
