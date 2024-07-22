@@ -5,6 +5,7 @@ import Main from './pages/mainPage/Main';
 import Header from './components/common/Header';
 import TheaterSearch from './pages/TheaterSearch/TheaterSearch';
 import SplashScreen from './pages/mainPage/SplashScreen';
+import DetailPage from './pages/detailPage';
 
 function Router() {
   return (
@@ -15,6 +16,7 @@ function Router() {
           <Route path="/" element={<SplashScreen />} />
           <Route path="/main" element={<Main />} />
           <Route path="/list" element={<TheaterSearch />} />
+          <Route path="/detail" element={<DetailPage />} />
         </Routes>
       </BrowserRouter>
     </Layout>
@@ -32,7 +34,6 @@ const HeaderWrapper: React.FC = () => {
         setHidden(true);
       }, 1000); // 1초 후에 공간을 줄임
       return () => clearTimeout(hideTimer);
-
     } else {
       setSlideUp(false);
       setHidden(false);
