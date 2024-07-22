@@ -1,30 +1,47 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import ResponsiveWrapper from '../../components/ResponsiveWrapper';
-import { theater3, theater2 } from '../../dummy/theater';
+import { generateRandomTheater } from '../../dummy/theater';
+import FunctionButton from './components/FunctionButton';
 import Seat from './components/Seat';
 
 const DetailPage = () => {
+  const theater = generateRandomTheater();
+  const max = Math.max(...theater.map((item) => item.length));
+  const screeWidth = Math.max(407, 35 * max);
   return (
     <ResponsiveWrapper>
-      <Navigator>10관</Navigator>
-      <Screen>SCREEN</Screen>
+      <Navigator>
+        <button>
+          <img src="/svg/PrevArrow.svg" />
+        </button>
+        <span>10관</span>
+        <button>
+          <img src="/svg/NextArrow.svg" />
+        </button>
+      </Navigator>
 
       <SeatLayout>
-        {theater3.map((item, ascii) => {
-          console.log(String.fromCharCode(ascii));
+        <Screen width={screeWidth}>SCREEN</Screen>
+
+        {theater.map((item, ascii) => {
           return (
-            <RowWrapper>
+            <RowWrapper key={ascii}>
               <Alpha>{String.fromCharCode(ascii + 65)}</Alpha>
-              <Row>
+              <Row flexType={screeWidth === 407 ? 'center' : 'flex-start'}>
                 {item.map((type, idx) => (
-                  <Seat type={type} seatNum={idx + 1} />
+                  <Seat key={idx} type={type} seatNum={idx + 1} />
                 ))}
               </Row>
             </RowWrapper>
           );
         })}
       </SeatLayout>
+
+      <ButtonList>
+        <FunctionButton src="/svg/ReviewIcon.svg" text="관람 후기 보기" />
+        <FunctionButton src="/svg/Ticket.svg" text="사이트로 이동" />
+      </ButtonList>
     </ResponsiveWrapper>
   );
 };
@@ -35,34 +52,47 @@ const Navigator = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 25px;
   height: 30px;
   width: 100%;
-  margin: 15px 0;
-  border: 1px solid #dedede;
-  color: black;
-  border-radius: 10px;
-`;
-const Screen = styled.div`
   margin: 15px 0px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #66666640;
-  min-height: 30px;
-  width: 100%;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
-  color: white;
+  border-radius: 10px;
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+  span {
+    font-size: 30px;
+    color: #66666666;
+    font-weight: 600;
+  }
 `;
 const SeatLayout = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  max-height: 300px;
   overflow: scroll;
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+const Screen = styled.div<{ width: number }>`
+  margin: 15px 0px;
+  margin-left: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #66666640;
+  min-height: 30px;
+  width: ${({ width }) => `${width}px`};
+  color: white;
 `;
 const Alpha = styled.div`
   display: flex;
@@ -80,8 +110,17 @@ const RowWrapper = styled.div`
   align-items: center;
   width: 100%;
 `;
-const Row = styled.div`
+const Row = styled.div<{ flexType: string }>`
   display: flex;
   width: 100%;
-  justify-content: center;
+  justify-content: ${({ flexType }) => flexType};
+`;
+const ButtonList = styled.div`
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
 `;
