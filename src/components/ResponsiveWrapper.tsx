@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import styled from "styled-components";
+import { ReactNode } from 'react';
+import styled from 'styled-components';
 
 function ResponsiveWrapper({ children }: { children: ReactNode }) {
   return <Wrapper>{children}</Wrapper>;
@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  box-sizing:border-box;
+  /* box-sizing:border-box; */
   /* border: 1px solid black; */
   @media screen and (min-width: 1280px) {
     width: 1280px;
