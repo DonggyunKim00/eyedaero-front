@@ -4,35 +4,76 @@ import 'slick-carousel/slick/slick-theme.css';
 import React from 'react';
 import Slider from 'react-slick';
 import styled from 'styled-components';
+import { FaWheelchair } from 'react-icons/fa';
+
+const getRandomNumber = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 const movieItems = [
   {
     title: '데드풀과 울버린',
-    detail: '615관',
-    imgSrc: '', // 실제 이미지 경로로 변경 또는 비워둠
+    nowShowing: getRandomNumber(300, 600),
+    imgSrc: '/movie/001.jpeg', // 실제 이미지 경로로 변경
   },
   {
     title: '파일럿',
-    detail: '570관',
-    imgSrc: '', // 실제 이미지 경로로 변경 또는 비워둠
+    nowShowing: getRandomNumber(300, 600),
+    imgSrc: '/movie/002.jpeg', // 실제 이미지 경로로 변경
   },
   {
     title: '슈퍼배드 4',
-    detail: '511관',
-    imgSrc: '', // 실제 이미지 경로로 변경 또는 비워둠
+    nowShowing: getRandomNumber(300, 600),
+    imgSrc: '/movie/003.jpeg', // 실제 이미지 경로로 변경
   },
-  // 필요한 만큼 영화 객체를 추가
+  {
+    title: '명탐정 코난',
+    nowShowing: getRandomNumber(300, 600),
+    imgSrc: '/movie/004.jpeg', // 실제 이미지 경로로 변경
+  },
+  {
+    title: '탈주',
+    nowShowing: getRandomNumber(300, 600),
+    imgSrc: '/movie/005.jpeg', // 실제 이미지 경로로 변경
+  },
+  {
+    title: '리볼버',
+    nowShowing: getRandomNumber(300, 600),
+    imgSrc: '/movie/006.jpeg', // 실제 이미지 경로로 변경
+  },
+  {
+    title: '사랑의 하츄핑',
+    nowShowing: getRandomNumber(300, 600),
+    imgSrc: '/movie/007.jpeg', // 실제 이미지 경로로 변경
+  },
+  {
+    title: '인사이드 아웃 2',
+    nowShowing: getRandomNumber(300, 600),
+    imgSrc: '/movie/008.jpeg', // 실제 이미지 경로로 변경
+  },
+  {
+    title: '탈출',
+    nowShowing: getRandomNumber(300, 600),
+    imgSrc: '/movie/009.jpeg', // 실제 이미지 경로로 변경
+  },
+  {
+    title: '다시 만나는 날',
+    nowShowing: getRandomNumber(300, 600),
+    imgSrc: '/movie/010.jpeg', // 실제 이미지 경로로 변경
+  },
 ];
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  margin-top: 20px;
+  margin-top: 16px;
+
 `;
 
 const Title = styled.div`
   display: flex;
   color: #666666;
+  font-weight: 500;
   font-size: 18px;
   margin-top: 20px;
   padding: 0 10px;
@@ -66,6 +107,7 @@ const MovieImage = styled.div<{ src?: string }>`
 const MovieTitle = styled.h2`
   text-align: left;
   font-size: 16px;
+  font-weight: 400;
   margin: 0;
   color: #666666;
 `;
@@ -100,16 +142,29 @@ const MovieSlider: React.FC = () => {
 
   return (
     <Container>
-      <Title>실시간 인기영화</Title>
+      <Title>실시간 인기 영화</Title>
       <Wrapper>
         <Slider {...settings}>
           {movieItems.map((item) => (
-            <MoviePoster key={item.title} onClick={() => handleImageClick(item.title)}>
+            <MoviePoster
+              key={item.title}
+              onClick={() => handleImageClick(item.title)}
+            >
               <MovieImage src={item.imgSrc || ''}>
                 {!item.imgSrc && <span>이미지 없음</span>}
               </MovieImage>
               <MovieTitle>{item.title}</MovieTitle>
-              <MovieDetail>{item.detail}</MovieDetail>
+              <MovieDetail>
+                현재 {item.nowShowing}관
+                <FaWheelchair
+                  style={{
+                    marginLeft: '5px',
+                    fontSize: '13px',
+                    top: '2.25px',
+                    position: 'relative',
+                  }}
+                />
+              </MovieDetail>
             </MoviePoster>
           ))}
         </Slider>
@@ -126,4 +181,6 @@ const Container = styled.div`
   flex-direction: column;
   width: 393px;
   box-sizing: border-box;
+  margin-bottom: 2px;
+  margin-top: 2px;
 `;

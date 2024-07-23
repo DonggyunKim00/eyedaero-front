@@ -6,9 +6,10 @@ import Slider from 'react-slick';
 import styled from 'styled-components';
 
 interface SliderItem {
+  id: number;
   title: string;
-  detail: string;
   imgSrc: string;
+  nowShowing: number;
 }
 
 interface CustomSliderProps {
@@ -53,6 +54,7 @@ const SliderTitle = styled.h2`
   font-size: 16px;
   margin: 0;
   color: #666666;
+  line-height: 1.2; /* 행간 조절 */
 `;
 
 const SliderDetail = styled.p`
@@ -87,12 +89,12 @@ const CustomSlider: React.FC<CustomSliderProps> = ({ items, location, onRequestL
       <Wrapper>
         <Slider {...settings}>
           {items.map((item) => (
-            <SliderItem key={item.title} onClick={() => handleImageClick(item.title)}>
+            <SliderItem key={item.id} onClick={() => handleImageClick(item.title)}>
               <SliderImage src={item.imgSrc || ''}>
                 {!item.imgSrc && <span>이미지 없음</span>}
               </SliderImage>
               <SliderTitle>{item.title}</SliderTitle>
-              <SliderDetail>{item.detail}</SliderDetail>
+              <SliderDetail>상영 중: {item.nowShowing}관</SliderDetail>
             </SliderItem>
           ))}
         </Slider>
