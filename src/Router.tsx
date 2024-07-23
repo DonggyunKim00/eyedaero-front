@@ -23,25 +23,25 @@ function Router() {
   );
 }
 
-const HeaderWrapper: React.FC = () => {
-  const location = useLocation();
-  const [slideUp, setSlideUp] = useState(false);
-  const [hidden, setHidden] = useState(false);
+// const HeaderWrapper: React.FC = () => {
+//   const location = useLocation();
+//   const [slideUp, setSlideUp] = useState(false);
+//   const [hidden, setHidden] = useState(false);
 
-  useEffect(() => {
-    if (location.pathname === '/list') {
-      const hideTimer = setTimeout(() => {
-        setHidden(true);
-      }, 1000); // 1초 후에 공간을 줄임
-      return () => clearTimeout(hideTimer);
-    } else {
-      setSlideUp(false);
-      setHidden(false);
-    }
-  }, [location.pathname]);
+//   useEffect(() => {
+//     if (location.pathname === '/list') {
+//       const hideTimer = setTimeout(() => {
+//         setHidden(true);
+//       }, 1000); // 1초 후에 공간을 줄임
+//       return () => clearTimeout(hideTimer);
+//     } else {
+//       setSlideUp(false);
+//       setHidden(false);
+//     }
+//   }, [location.pathname]);
 
-  return <Header slideUp={slideUp} hidden={hidden} />;
-};
+//   return <Header slideUp={slideUp} hidden={hidden} />;
+// };
 
 export default Router;
 

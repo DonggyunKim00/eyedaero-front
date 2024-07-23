@@ -2,18 +2,29 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { FaWheelchair } from 'react-icons/fa'; // Font Awesome 아이콘 사용
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 interface HeaderProps {
   slideUp: boolean;
   hidden: boolean;
 }
 
+const dummyData = [
+  { id: 1, name: '데드풀과 울버린' },
+  { id: 2, name: '파일럿' },
+  { id: 3, name: '슈퍼배드 4' },
+  { id: 4, name: '명탐정 코난' },
+  { id: 5, name: '탈주' },
+  { id: 6, name: '리볼버' },
+  { id: 7, name: '사랑의 하츄핑' },
+  { id: 8, name: '인사이드 아웃 2' },
+  { id: 9, name: '탈출' },
+  { id: 10, name: '다시 만나는 날' },
+];
+
 const Header: React.FC<HeaderProps> = ({ hidden }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hasMenuBeenToggled, setHasMenuBeenToggled] = useState(false);
   const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태 추가
-  const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태 추가
   const navigate = useNavigate();
 
   const handleMenuItemClick = () => {
@@ -25,20 +36,9 @@ const Header: React.FC<HeaderProps> = ({ hidden }) => {
     setHasMenuBeenToggled(true);
   };
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (searchQuery.length > 0) {
-      try {
-        const response = await axios.get('https://moral-genevieve-gamza-e8c80456.koyeb.app/movie', {
-          params: {
-            name: searchQuery,
-          },
-        });
-        setSearchResults(response.data);
-      } catch (error) {
-        console.error('검색 요청 실패:', error);
-      }
-    } else {
-      setSearchResults([]);
+      navigate(`/list?query=${encodeURIComponent(searchQuery)}`);
     }
   };
 
@@ -47,7 +47,6 @@ const Header: React.FC<HeaderProps> = ({ hidden }) => {
       handleSearch();
     }
   };
-  
 
   return (
     <Container hidden={hidden}>
@@ -64,7 +63,7 @@ const Header: React.FC<HeaderProps> = ({ hidden }) => {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
             />
-            <IconContainer  onClick={handleSearch}>
+            <IconContainer onClick={handleSearch}>
               <FaWheelchair />
             </IconContainer>
           </SearchBarContainer>
@@ -82,19 +81,11 @@ const Header: React.FC<HeaderProps> = ({ hidden }) => {
         <MenuItem onClick={handleMenuItemClick}>로그인</MenuItem>
         <MenuItem onClick={handleMenuItemClick}>로그아웃</MenuItem>
       </SideMenu>
-      {searchResults.length > 0 && (
-        <SearchResultsContainer>
-          {searchResults.map((result: any) => (
-            <SearchResultItem key={result.id}>{result.name}</SearchResultItem>
-          ))}
-        </SearchResultsContainer>
-      )}
     </Container>
   );
 };
 
 export default Header;
-
 const Container = styled.div<{ hidden: boolean }>`
   width: 100%;
   display: flex;
